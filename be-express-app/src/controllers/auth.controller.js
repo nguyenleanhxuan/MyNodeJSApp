@@ -51,4 +51,9 @@ export const authController = {
       data: result,
     });
   },
+  async googleCallback(req, res, next) {
+    res.cookie("accessToken", req.user.accessToken);
+    res.cookie("refreshToken", req.user.refreshToken);
+    res.redirect("http://localhost:3001/login-callback");
+  },
 };

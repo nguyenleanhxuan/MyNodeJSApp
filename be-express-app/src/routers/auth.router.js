@@ -23,9 +23,7 @@ authRouter.get(
     failureRedirect: "/login",
     session: false,
   }),
-  function (req, res) {
-    res.redirect("/");
-  },
+  authController.googleCallback,
 );
 
 export default authRouter;
