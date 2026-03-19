@@ -1,0 +1,27 @@
+import { STATUS_CODES } from "http";
+
+export const responseSuccess = (
+  response,
+  data,
+  message,
+  statusCode = STATUS_CODES.OK,
+  link,
+) => {
+  return response.status(statusCode).json({
+    status: "success",
+    statusCode: statusCode,
+    message: message || "Request successful",
+    data: data,
+    doc: link,
+  });
+};
+
+export const responseError = (response, error, statusCode = 500) => {
+  return response.status(statusCode).json({
+    status: "error",
+    statusCode: statusCode,
+    message: error.message || "An error occurred",
+    data: null,
+    doc: "Swagger documentation URL or reference",
+  });
+};
