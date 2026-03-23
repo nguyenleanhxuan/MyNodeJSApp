@@ -30,21 +30,23 @@ model food_type {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model like_res {
-  user_id    Int?
-  res_id     Int?
-  amount     Int?
-  date_rate  DateTime?   @db.DateTime(0)
-  restaurant restaurant? @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_res")
-  users      users?      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_user")
+  like_id    Int        @id @default(autoincrement())
+  user_id    Int
+  res_id     Int
+  date_rate  DateTime   @default(now()) @db.DateTime(0)
 
+  users      users      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_user")
+  restaurant restaurant @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_res")
+
+  @@unique([user_id, res_id], map: "uq_like_user_restaurant")
   @@index([res_id], map: "fk_like_res")
   @@index([user_id], map: "fk_like_user")
-  @@ignore
+  /// @@ignore
 }
 
 model orders {
   order_id   Int     @id @default(autoincrement())
-  user_id    Int?
+  user_id    Int
   food_id    Int?
   amount     Int?
   code       String? @db.VarChar(100)
@@ -58,16 +60,15 @@ model orders {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model rate_res {
-  user_id    Int?
-  res_id     Int?
+  rate_id    Int         @id @default(autoincrement())
+  user_id    Int
+  res_id     Int
   amount     Int?
   date_rate  DateTime?   @db.DateTime(0)
-  restaurant restaurant? @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rate_res")
-  users      users?      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rate_user")
 
   @@index([res_id], map: "fk_rate_res")
   @@index([user_id], map: "fk_rate_user")
-  @@ignore
+  /// @@ignore
 }
 
 model restaurant {
@@ -75,8 +76,7 @@ model restaurant {
   res_name    String?    @db.VarChar(150)
   image       String?    @db.VarChar(255)
   description String?    @db.VarChar(255)
-  like_res    like_res[] @ignore
-  rate_res    rate_res[] @ignore
+  like_res    like_res[]
 }
 
 model sub_food {
@@ -90,15 +90,66 @@ model sub_food {
 }
 
 model users {
-  user_id    Int        @id @default(autoincrement())
-  full_name  String?    @db.VarChar(150)
-  email      String?    @unique(map: "unique_email") @db.VarChar(100)
-  password   String?    @db.VarChar(100)
-  avatar     String?    @db.Text
-  age        Int?
-  totpSecret String?    @db.VarChar(255)
-  googleId   String?    @db.VarChar(255)
-  like_res   like_res[] @ignore
-  orders     orders[]
-  rate_res   rate_res[] @ignore
+  user_id          Int                @id @default(autoincrement())
+  full_name        String?            @db.VarChar(150)
+  email            String?            @unique(map: "unique_email") @db.VarChar(100)
+  password         String?            @db.VarChar(100)
+  avatar           String?            @db.Text
+  age              Int?
+  totpSecret       String?            @db.VarChar(255)
+  googleId         String?            @db.VarChar(255)
+  ChatGroupMembers ChatGroupMembers[]
+  ChatGroups       ChatGroups[]
+  ChatMessages     ChatMessages[]
+  orders           orders[]
+  like_res         like_res[]
+}
+
+model ChatGroupMembers {
+  id          Int         @id @default(autoincrement())
+  userId      Int?
+  chatGroupId Int?
+  deletedBy   Int         @default(0)
+  isDeleted   Boolean     @default(false)
+  deletedAt   DateTime?   @db.Timestamp(0)
+  createdAt   DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime    @default(now()) @db.Timestamp(0)
+  ChatGroups  ChatGroups? @relation(fields: [chatGroupId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_group_members_group")
+  users       users?      @relation(fields: [userId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_group_members_user")
+
+  @@index([chatGroupId], map: "fk_chat_group_members_group")
+  @@index([userId], map: "fk_chat_group_members_user")
+}
+
+model ChatGroups {
+  id               Int                @id @default(autoincrement())
+  name             String?            @db.VarChar(255)
+  ownerId          Int?
+  deletedBy        Int                @default(0)
+  isDeleted        Boolean            @default(false)
+  deletedAt        DateTime?          @db.Timestamp(0)
+  createdAt        DateTime           @default(now()) @db.Timestamp(0)
+  updatedAt        DateTime           @default(now()) @db.Timestamp(0)
+  ChatGroupMembers ChatGroupMembers[]
+  users            users?             @relation(fields: [ownerId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_groups_owner")
+  ChatMessages     ChatMessages[]
+
+  @@index([ownerId], map: "fk_chat_groups_owner")
+}
+
+model ChatMessages {
+  id           Int         @id @default(autoincrement())
+  chatGroupId  Int?
+  userIdSender Int?
+  messageText  String?     @db.Text
+  deletedBy    Int         @default(0)
+  isDeleted    Boolean     @default(false)
+  deletedAt    DateTime?   @db.Timestamp(0)
+  createdAt    DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime    @default(now()) @db.Timestamp(0)
+  ChatGroups   ChatGroups? @relation(fields: [chatGroupId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_messages_group")
+  users        users?      @relation(fields: [userIdSender], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_messages_sender")
+
+  @@index([chatGroupId], map: "fk_chat_messages_group")
+  @@index([userIdSender], map: "fk_chat_messages_sender")
 }

@@ -66,6 +66,13 @@ export const foodService = {
       items,
     };
   },
+  async findOneById(id) {
+    const food = await prisma.food.findUnique({
+      where: { food_id: parseInt(id, 10) },
+    });
+    return food;
+  },
+
   // Để nhận được body cần 1 middleware body parser, ở đây dùng express.json() ở file app.js
   async createFood(foodData) {
     const data = {

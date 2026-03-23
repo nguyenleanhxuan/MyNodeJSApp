@@ -6,8 +6,12 @@ import { appError } from "./src/common/helpers/error.helper.js";
 import cookieParser from "cookie-parser";
 import { logApiMiddleware } from "./src/middlewares/log-api.middleware.js";
 import { initLoginGooglePassport } from "./src/common/passport/login-google.passport.js";
+import swaggerUI from "swagger-ui-express";
+import { swaggerDocument } from "./src/common/swagger/swagger.js";
+import { initSocket } from "./src/common/socket/init.socket.js";
 
 const app = express();
+const httpServer = initSocket(app);
 
 const port = 3000;
 // Every app.use must be before RootRouter
@@ -49,6 +53,8 @@ app.use(
 app.use(express.json());
 
 initLoginGooglePassport();
+//swagger
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Use rootRouter for all routes starting with /api
 app.use("/api", rootRouter);

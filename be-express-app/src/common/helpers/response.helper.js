@@ -4,7 +4,7 @@ export const responseSuccess = (
   response,
   data,
   message,
-  statusCode = STATUS_CODES.OK,
+  statusCode = 200,
   link,
 ) => {
   return response.status(statusCode).json({

@@ -34,7 +34,7 @@ foodRouter.get(
   //   },
   foodController.findAll,
 );
-
+foodRouter.get("/foodDetail/:id", foodController.findOneById);
 foodRouter.post("/createFood", foodController.createFood);
 
 foodRouter.put("/updateFood/:id", foodController.updateFood);

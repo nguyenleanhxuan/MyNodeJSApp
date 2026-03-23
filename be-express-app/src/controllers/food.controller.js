@@ -12,6 +12,17 @@ export const foodController = {
       doc: "Swagger documentation URL or reference",
     });
   },
+  async findOneById(request, response, next) {
+    const { id } = request.params;
+    const result = await foodService.findOneById(id);
+    response.json({
+      status: "success",
+      statusCode: 200,
+      message: "Food items retrieved successfully",
+      data: result,
+      doc: "Swagger documentation URL or reference",
+    });
+  },
   async createFood(request, response, next) {
     const result = await foodService.createFood(request.body);
     response.json({

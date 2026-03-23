@@ -35,6 +35,7 @@ export const buildQueryPrimaHelper = (queryParams) => {
 
   const whereFilters = {};
 
+  // Food-specific filters
   const foodId = Number(parsedFilters.food_id);
   if (Number.isInteger(foodId) && foodId > 0) {
     whereFilters.food_id = foodId;
@@ -51,6 +52,15 @@ export const buildQueryPrimaHelper = (queryParams) => {
   if (parsedFilters.price !== undefined && Number.isFinite(price)) {
     whereFilters.price = price;
   }
+
+  // User-specific filters
+  const fullName = String(parsedFilters.fullName || "").trim();
+  if (fullName) {
+    whereFilters.full_name = {
+      contains: fullName,
+    };
+  }
+
   return {
     page,
     pageSize,
