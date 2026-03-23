@@ -7,6 +7,7 @@ totpSecret = CONCAT('SECRET', LPAD(user_id,3,'0')),
 googleId = CONCAT('google_', LPAD(user_id,3,'0'));
 
 
+ALTER TABLE users ADD COLUMN password VARCHAR(100);
 UPDATE users SET age = 20 + user_id;
 
 

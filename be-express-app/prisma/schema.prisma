@@ -30,23 +30,21 @@ model food_type {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model like_res {
-  like_id    Int        @id @default(autoincrement())
-  user_id    Int
-  res_id     Int
-  date_rate  DateTime   @default(now()) @db.DateTime(0)
+  like_id    Int         @id @default(autoincrement())
+  user_id    Int?
+  res_id     Int?
+  amount     Int?
+  date_rate  DateTime?   @db.DateTime(0)
+  restaurant restaurant? @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_res")
+  users      users?      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_user")
 
-  users      users      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_user")
-  restaurant restaurant @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_like_res")
-
-  @@unique([user_id, res_id], map: "uq_like_user_restaurant")
   @@index([res_id], map: "fk_like_res")
   @@index([user_id], map: "fk_like_user")
-  /// @@ignore
 }
 
 model orders {
   order_id   Int     @id @default(autoincrement())
-  user_id    Int
+  user_id    Int?
   food_id    Int?
   amount     Int?
   code       String? @db.VarChar(100)
@@ -58,17 +56,18 @@ model orders {
   @@index([user_id], map: "fk_user_id")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model rate_res {
-  rate_id    Int         @id @default(autoincrement())
+  rate_id    Int        @id @default(autoincrement())
   user_id    Int
   res_id     Int
-  amount     Int?
-  date_rate  DateTime?   @db.DateTime(0)
+  amount     Int
+  date_rate  DateTime   @default(now()) @db.DateTime(0)
+  restaurant restaurant @relation(fields: [res_id], references: [res_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rate_res")
+  users      users      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rate_user")
 
+  @@unique([user_id, res_id], map: "uq_rate_user_restaurant")
   @@index([res_id], map: "fk_rate_res")
   @@index([user_id], map: "fk_rate_user")
-  /// @@ignore
 }
 
 model restaurant {
@@ -77,6 +76,7 @@ model restaurant {
   image       String?    @db.VarChar(255)
   description String?    @db.VarChar(255)
   like_res    like_res[]
+  rate_res    rate_res[]
 }
 
 model sub_food {
@@ -101,8 +101,9 @@ model users {
   ChatGroupMembers ChatGroupMembers[]
   ChatGroups       ChatGroups[]
   ChatMessages     ChatMessages[]
-  orders           orders[]
   like_res         like_res[]
+  orders           orders[]
+  rate_res         rate_res[]
 }
 
 model ChatGroupMembers {

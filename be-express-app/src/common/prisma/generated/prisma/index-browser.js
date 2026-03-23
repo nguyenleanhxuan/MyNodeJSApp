@@ -135,6 +135,14 @@ exports.Prisma.Food_typeScalarFieldEnum = {
   type_name: 'type_name'
 };
 
+exports.Prisma.Like_resScalarFieldEnum = {
+  like_id: 'like_id',
+  user_id: 'user_id',
+  res_id: 'res_id',
+  amount: 'amount',
+  date_rate: 'date_rate'
+};
+
 exports.Prisma.OrdersScalarFieldEnum = {
   order_id: 'order_id',
   user_id: 'user_id',
@@ -142,6 +150,14 @@ exports.Prisma.OrdersScalarFieldEnum = {
   amount: 'amount',
   code: 'code',
   arr_sub_id: 'arr_sub_id'
+};
+
+exports.Prisma.Rate_resScalarFieldEnum = {
+  rate_id: 'rate_id',
+  user_id: 'user_id',
+  res_id: 'res_id',
+  amount: 'amount',
+  date_rate: 'date_rate'
 };
 
 exports.Prisma.RestaurantScalarFieldEnum = {
@@ -167,6 +183,40 @@ exports.Prisma.UsersScalarFieldEnum = {
   age: 'age',
   totpSecret: 'totpSecret',
   googleId: 'googleId'
+};
+
+exports.Prisma.ChatGroupMembersScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chatGroupId: 'chatGroupId',
+  deletedBy: 'deletedBy',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatGroupsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  ownerId: 'ownerId',
+  deletedBy: 'deletedBy',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatMessagesScalarFieldEnum = {
+  id: 'id',
+  chatGroupId: 'chatGroupId',
+  userIdSender: 'userIdSender',
+  messageText: 'messageText',
+  deletedBy: 'deletedBy',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -213,14 +263,27 @@ exports.Prisma.usersOrderByRelevanceFieldEnum = {
   googleId: 'googleId'
 };
 
+exports.Prisma.ChatGroupsOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
+exports.Prisma.ChatMessagesOrderByRelevanceFieldEnum = {
+  messageText: 'messageText'
+};
+
 
 exports.Prisma.ModelName = {
   food: 'food',
   food_type: 'food_type',
+  like_res: 'like_res',
   orders: 'orders',
+  rate_res: 'rate_res',
   restaurant: 'restaurant',
   sub_food: 'sub_food',
-  users: 'users'
+  users: 'users',
+  ChatGroupMembers: 'ChatGroupMembers',
+  ChatGroups: 'ChatGroups',
+  ChatMessages: 'ChatMessages'
 };
 
 /**
